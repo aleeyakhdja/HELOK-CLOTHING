@@ -3,13 +3,11 @@ package com.heroku.java;
 import org.jscience.physics.amount.Amount;
 import org.jscience.physics.model.RelativisticModel;
 import javax.measure.unit.SI;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
-
 import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -34,7 +32,6 @@ public class GettingStartedApplication {
             .map(Amount::valueOf)
             .map(energy -> "E=mc^2: " + energy + " = " + energy.to(SI.KILOGRAM))
             .orElse("ENERGY environment variable is not set!");
-
         model.put("result", result);
         return "convert";
     }
@@ -50,13 +47,11 @@ public class GettingStartedApplication {
             final var statement = connection.createStatement();
             statement.executeUpdate("CREATE TABLE IF NOT EXISTS ticks (tick timestamp)");
             statement.executeUpdate("INSERT INTO ticks VALUES (now())");
-
             final var resultSet = statement.executeQuery("SELECT tick FROM ticks");
             final var output = new ArrayList<>();
             while (resultSet.next()) {
                 output.add("Read from DB: " + resultSet.getTimestamp("tick"));
             }
-
             model.put("records", output);
             return "database";
         }
