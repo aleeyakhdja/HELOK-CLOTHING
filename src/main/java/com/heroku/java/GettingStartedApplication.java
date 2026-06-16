@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 package com.heroku.java;
 
 import org.jscience.physics.amount.Amount;
@@ -26,20 +25,19 @@ public class GettingStartedApplication {
     public GettingStartedApplication(DataSource dataSource) {
         this.dataSource = dataSource;
     }
-@GetMapping("/convert")
-String convert(Map<String, Object> model) {
-    RelativisticModel.select();
 
-    final var result = java.util.Optional
-        .ofNullable(System.getenv().get("ENERGY"))
-        .map(Amount::valueOf)
-        .map(energy -> "E=mc^2: " + energy + " = " + energy.to(SI.KILOGRAM))
-        .orElse("ENERGY environment variable is not set!");
+    @GetMapping("/convert")
+    String convert(Map<String, Object> model) {
+        RelativisticModel.select();
+        final var result = java.util.Optional
+            .ofNullable(System.getenv().get("ENERGY"))
+            .map(Amount::valueOf)
+            .map(energy -> "E=mc^2: " + energy + " = " + energy.to(SI.KILOGRAM))
+            .orElse("ENERGY environment variable is not set!");
 
-    model.put("result", result);
-    return "convert";
-}
-
+        model.put("result", result);
+        return "convert";
+    }
 
     @GetMapping("/")
     public String index() {
@@ -68,74 +66,3 @@ String convert(Map<String, Object> model) {
         SpringApplication.run(GettingStartedApplication.class, args);
     }
 }
-=======
-package com.heroku.java;
-
-import org.jscience.physics.amount.Amount;
-import org.jscience.physics.model.RelativisticModel;
-import javax.measure.unit.SI;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-
-import javax.sql.DataSource;
-import java.sql.Connection;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Map;
-
-@SpringBootApplication
-@Controller
-public class GettingStartedApplication {
-    private final DataSource dataSource;
-
-    @Autowired
-    public GettingStartedApplication(DataSource dataSource) {
-        this.dataSource = dataSource;
-    }
-@GetMapping("/convert")
-String convert(Map<String, Object> model) {
-    RelativisticModel.select();
-
-    final var result = java.util.Optional
-        .ofNullable(System.getenv().get("ENERGY"))
-        .map(Amount::valueOf)
-        .map(energy -> "E=mc^2: " + energy + " = " + energy.to(SI.KILOGRAM))
-        .orElse("ENERGY environment variable is not set!");
-
-    model.put("result", result);
-    return "convert";
-}
-
-
-    @GetMapping("/")
-    public String index() {
-        return "index";
-    }
-
-    @GetMapping("/database")
-    String database(Map<String, Object> model) throws SQLException {
-        try (Connection connection = dataSource.getConnection()) {
-            final var statement = connection.createStatement();
-            statement.executeUpdate("CREATE TABLE IF NOT EXISTS ticks (tick timestamp)");
-            statement.executeUpdate("INSERT INTO ticks VALUES (now())");
-
-            final var resultSet = statement.executeQuery("SELECT tick FROM ticks");
-            final var output = new ArrayList<>();
-            while (resultSet.next()) {
-                output.add("Read from DB: " + resultSet.getTimestamp("tick"));
-            }
-
-            model.put("records", output);
-            return "database";
-        }
-    }
-
-    public static void main(String[] args) {
-        SpringApplication.run(GettingStartedApplication.class, args);
-    }
-}
->>>>>>> 9507a180c83b698c6e2aece99517229bd06ccd10
